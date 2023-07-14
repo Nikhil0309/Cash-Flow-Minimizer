@@ -1,12 +1,8 @@
-import networkx as nx
-import matplotlib.pyplot as plt
-import warnings
-warnings.filterwarnings("ignore", category=UserWarning)
-def insert_in_graph(j): #graph_initial formed here
+def insert_in_graph(j): 
     global graph_initial
     i=1
-    print("Enter y if yes n if no:")
-    print("Enter money you have to give to others {0}".format(graph_initial[j][0]))
+    #print("Enter y if yes n if no:")
+    print("Enter information how much you owe to every other in following,{} ".format(graph_initial[j][0]))
     while(True):
         if(i==len(graph_initial)):
             break
@@ -16,9 +12,9 @@ def insert_in_graph(j): #graph_initial formed here
             graph_final[j].append(0)
             graph_initial[j].append(0)
             continue
-        b=input("Do you owe {0} money?".format(graph_initial[i][0]))
+        b=input("Do you owe {0} money : ".format(graph_initial[i][0]))
         if(b=="y"):
-            f=int(input("Enter amount"))
+            f=int(input("What is the amount : "))
             i=i+1
             graph_initial[j].append(f)
             graph_final[j].append(0) #Making a n*n matrix called graph_final with everything 0
@@ -27,7 +23,7 @@ def insert_in_graph(j): #graph_initial formed here
             graph_final[j].append(0)
             i=i+1
         else:
-            print("Please enter something valid")
+            print("Not vaid input")
 
 
 def add_debits(i):
@@ -52,7 +48,7 @@ def money_involved():
 
         m=add_debits(i)
         c=c-m
-        if(c>0): #creating 2 graphs/2D list clled graph_credit and graph_debit storing who has to give money overall and take money overall
+        if(c>0): 
             graph_credit[i].append(c)
             graph_debit[i].append(0)
         if(c<0):
@@ -64,7 +60,7 @@ def money_involved():
             graph_debit[i].append(0)
 
 
-def final_graph(): #here now the final graphs starts to be printed using graph_credit and graph_debit
+def final_graph():
     global graph_initial
     global graph_credit
     global graph_debit
@@ -108,10 +104,8 @@ def calculation():
             graph_credit[l][1]=0
             graph_debit[k][1]=m
 
-
-
-print("Welcome to the effecient split wise debt simplification")
-n=int(input("Total people involved in the transaction"))
+print("***WELCOME TO CASH FLOW MINIMIZER***")
+n=int(input("Total people involved :"))
 graph_initial=[[]]
 list_name=[]
 graph_credit=[[]]
@@ -119,76 +113,50 @@ graph_debit=[[]]
 graph_final=[[]]
 stackcr=[]
 stackde=[]
+
 for i in range(0,n):
-    c=input("Enter name of person")
+    c=input("Enter name of person {} :".format(i+1))
     graph_initial.append([c]) #initialising all graphs to 0
     graph_credit.append([c])
     graph_debit.append([c])
     graph_final.append([c])
+
+print("NOTE: 'y' for yes and 'n' for no ")
+
 for j in range(1,n+1):
-    insert_in_graph(j) #making graph_initial who owes what money
+    insert_in_graph(j) 
+
 money_involved()
 final_graph()
 
+#print(list(graph_final))
+#print(graph_initial)
 
-
-
-
-from IPython.display import clear_output
-b = nx.DiGraph(directed = True)
-lab = {}
 gr = graph_initial
-print("\n\nInitial graph who owes whom:")
-
-for i in range(1,len(gr)):
-    for j in range(1,len(gr)):
-        if(gr[i][j] != 0):
-            b.add_edge(gr[i][0],gr[j][0])
-            lab[(gr[i][0],gr[j][0])] = str(gr[i][j])
-#pos = nx.spring_layout(b)
-#pos = nx.spectral_layout(b)
-pos = nx.kamada_kawai_layout(b)
-#plt.figure()
-nx.draw(b,pos,edge_color='black',width=1,linewidths=1, \
-        node_size=800,node_color='pink',alpha=0.9, \
-        labels={node:node for node in b.nodes()})
-nx.draw_networkx_edge_labels(b,pos,edge_labels=lab)
-clear_output(wait=True)
+print("\nInitial Transactions: ")
+k=1
 for i in range(1,len(gr)):
     for j in range(0,len(gr)):
         if(j==0):
             continue
         else:
             if(gr[i][j]!=0):
-                print("{} owes {} Rs to {}".format(gr[i][0],gr[i][j],gr[j][0]))
-print("\n")
+                print("{}. {} owes {} Rs to {}".format(k,gr[i][0],gr[i][j],gr[j][0]))
+                k+=1
 
-b = nx.DiGraph(directed = True)
-lab = {}
+k=1
 gr = graph_final
-print("Final graph who owes whom:")
+print("\nFinal Transactions:")
 for i in range(1,len(gr)):
     for j in range(0,len(gr)):
         if(j==0):
             continue
         else:
             if(gr[i][j]!=0):
-                print("{} owes {} Rs to {}".format(gr[i][0],gr[i][j],gr[j][0]))
-for i in range(1,len(gr)):
-    for j in range(1,len(gr)):
-        if(gr[i][j] != 0):
-            b.add_edge(gr[i][0],gr[j][0])
-            lab[(gr[i][0],gr[j][0])] = str(gr[i][j])
-#pos = nx.spring_layout(b)
-#pos = nx.spectral_layout(b)
-pos = nx.kamada_kawai_layout(b)
-plt.figure()
-nx.draw(b,pos,edge_color='black',width=1,linewidths=1, \
-        node_size=800,node_color='pink',alpha=0.9, \
-        labels={node:node for node in b.nodes()})
-nx.draw_networkx_edge_labels(b,pos,edge_labels=lab)
+                print("{}. {} owes {} Rs to {}".format(i,gr[i][0],gr[i][j],gr[j][0]))
+                k+=1
 
-clear_output(wait=True)
+'''
 print("\nInitially :")
 gr=graph_initial
 for i in range(1,len(gr)):
@@ -199,7 +167,7 @@ for i in range(1,len(gr)):
             if(gr[i][j]!=0):
                 print("{} owes {} Rs to {}".format(gr[i][0],gr[i][j],gr[j][0]))
             
-print("Finally :")
+print("\nFinally :")
 gr=graph_final
 for i in range(1,len(gr)):
     for j in range(0,len(gr)):
@@ -207,4 +175,4 @@ for i in range(1,len(gr)):
             continue
         else:
             if(gr[i][j]!=0):
-                print("{} owes {} Rs to {}".format(gr[i][0],gr[i][j],gr[j][0]))
+                print("{} owes {} Rs to {}".format(gr[i][0],gr[i][j],gr[j][0]))'''
